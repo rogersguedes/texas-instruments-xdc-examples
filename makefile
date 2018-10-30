@@ -34,10 +34,10 @@
 #  ======== makefile ========
 #
 
-EXBASE = ..
+EXBASE = .
 include $(EXBASE)/products.mak
 
-srcs = MainHost.c SvrHost.c AppHost.c
+srcs = hello.c
 objs = $(addprefix bin/$(PROFILE)/obj/,$(patsubst %.c,%.oea8fnv,$(srcs)))
 libs =
 CONFIG = bin/$(PROFILE)/configuro
@@ -47,11 +47,11 @@ CONFIG = bin/$(PROFILE)/configuro
 .PRECIOUS: %/compiler.opt %/linker.cmd
 
 all:
-	$(MAKE) PROFILE=debug PROCLIST="$(PROCLIST)" server_host.x
-	$(MAKE) PROFILE=release PROCLIST="$(PROCLIST)" server_host.x
+	$(MAKE) PROFILE=debug hello.x
+	$(MAKE) PROFILE=release hello.x
 
-server_host.x: bin/$(PROFILE)/server_host.xea8fnv
-bin/$(PROFILE)/server_host.xea8fnv: $(objs) $(libs) $(CONFIG)/linker.cmd
+hello.x: bin/$(PROFILE)/hello.xea8fnv
+bin/$(PROFILE)/hello.xea8fnv: $(objs) $(libs) $(CONFIG)/linker.cmd
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS)
@@ -62,27 +62,24 @@ bin/$(PROFILE)/obj/%.oea8fnv: %.c $(CONFIG)/compiler.opt
 	$(CC) $(CPPFLAGS) $(CFLAGS) --output_file=$@ -fc $<
 
 %/compiler.opt: %/linker.cmd ;
-%/linker.cmd: Host.cfg ../shared/config.bld
+%/linker.cmd: mycfg.cfg
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
-	$(XDC_INSTALL_DIR)/xs --xdcpath="$(subst +,;,$(PKGPATH))" \
+	$(XDC_INSTALL_DIR)/xs \
+			--xdcpath="$(subst +,;,$(PKGPATH))" \
             xdc.tools.configuro -o $(CONFIG) \
             -t ti.targets.arm.elf.A8Fnv \
             -c $(ti.targets.arm.elf.A8Fnv) \
-            -p ti.platforms.evmTI814X:host \
-            -b ../shared/config.bld -r release \
-            --cfgArgs "{ \
-                procList: \"$(PROCLIST)\", \
-                profile: \"$(PROFILE)\" \
-            }" Host.cfg
+            -p ti.platforms.evmTI814X:mycfg \
+            mycfg.cfg
 
 install:
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
 	@$(MKDIR) $(EXEC_DIR)/debug
-	$(CP) bin/debug/server_host.xea8fnv $(EXEC_DIR)/debug
+	$(CP) bin/debug/hello.xea8fnv $(EXEC_DIR)/debug
 	@$(MKDIR) $(EXEC_DIR)/release
-	$(CP) bin/release/server_host.xea8fnv $(EXEC_DIR)/release
+	$(CP) bin/release/hello.xea8fnv $(EXEC_DIR)/release
 
 help:
 	@$(ECHO) "make                   # build executable"

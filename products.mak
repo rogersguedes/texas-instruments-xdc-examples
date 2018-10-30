@@ -61,8 +61,6 @@ XDC_INSTALL_DIR        = $(DEPOT)/xdctools_3_30_04_52
 
 #### BIOS-side toolchains ####
 ti.targets.arm.elf.A8Fnv = $(CCS6_0)/arm_5.1.5
-ti.targets.elf.C674      = $(CCS6_0)/c6000_7.4.7
-ti.targets.arm.elf.M3    = $(CCS6_0)/arm_5.1.5
 
 # Use this goal to print your product variables.
 .show:
@@ -70,5 +68,3 @@ ti.targets.arm.elf.M3    = $(CCS6_0)/arm_5.1.5
 	@echo "IPC_INSTALL_DIR     = $(IPC_INSTALL_DIR)"
 	@echo "XDC_INSTALL_DIR     = $(XDC_INSTALL_DIR)"
 	@echo "ti.targets.arm.elf.A8Fnv = $(ti.targets.arm.elf.A8Fnv)"
-	@echo "ti.targets.elf.C674   = $(ti.targets.elf.C674)"
-	@echo "ti.targets.arm.elf.M3 = $(ti.targets.arm.elf.M3)"
