@@ -54,12 +54,12 @@ hello.x: bin/$(PROFILE)/hello.xea8fnv
 bin/$(PROFILE)/hello.xea8fnv: $(objs) $(libs) $(CONFIG)/linker.cmd
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
-	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(LD) -o $@ $^ $(RTS)
 
 bin/$(PROFILE)/obj/%.oea8fnv: %.c $(CONFIG)/compiler.opt
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
-	$(CC) $(CPPFLAGS) $(CFLAGS) --output_file=$@ -fc $<
+	$(CC) $(shell cat $(CONFIG)/compiler.opt) -c $<
 
 %/compiler.opt: %/linker.cmd ;
 %/linker.cmd: mycfg.cfg
@@ -68,9 +68,8 @@ bin/$(PROFILE)/obj/%.oea8fnv: %.c $(CONFIG)/compiler.opt
 	$(XDC_INSTALL_DIR)/xs \
 			--xdcpath="$(subst +,;,$(PKGPATH))" \
             xdc.tools.configuro -o $(CONFIG) \
-            -t ti.targets.arm.elf.A8Fnv \
+            -t gnu.targets.Linux86 \
             -c $(ti.targets.arm.elf.A8Fnv) \
-            -p ti.platforms.evmTI814X:mycfg \
             mycfg.cfg
 
 install:
@@ -102,14 +101,12 @@ endif
 #  ======== toolchain macros ========
 CGTOOLS = $(ti.targets.arm.elf.A8Fnv)
 
-CC = $(CGTOOLS)/bin/armcl -c
-LD = $(CGTOOLS)/bin/armlnk
+CC = $(CGTOOLS)/bin/arm-linux-gnueabihf-gcc
+LD = $(CGTOOLS)/bin/arm-linux-gnueabihf-gcc
+RTS = -lstdc++
 
 CPPFLAGS =
-CFLAGS = -qq -pdsw225 -ppd=$@.dep -ppa $(CCPROFILE_$(PROFILE)) -@$(CONFIG)/compiler.opt -I.
-
-LDFLAGS = -w -q -c -m $(@D)/obj/$(@F).map
-LDLIBS = -l $(CGTOOLS)/lib/rtsv7A8_A_le_n_v3_eabi.lib
+CFLAGS = -qq -pdsw225 -ppd=$@.dep -ppa $(CCPROFILE_$(PROFILE)) -@ -I.
 
 CCPROFILE_debug = -D_DEBUG_=1 --symdebug:dwarf
 CCPROFILE_release = -O2

@@ -52,7 +52,6 @@ endif
 # below.
 
 DEPOT = C:/Products
-CCS6_0 = C:/CCS/CCS6.0.0.00190/ccsv6/tools/compiler
 
 #### BIOS-side dependencies ####
 BIOS_INSTALL_DIR       = $(DEPOT)/bios_6_41_00_26
@@ -60,7 +59,7 @@ IPC_INSTALL_DIR        = $(DEPOT)/ipc_3_30_03_14
 XDC_INSTALL_DIR        = $(DEPOT)/xdctools_3_30_04_52
 
 #### BIOS-side toolchains ####
-ti.targets.arm.elf.A8Fnv = $(CCS6_0)/arm_5.1.5
+ti.targets.arm.elf.A8Fnv = C:/Products/gcc-linaro-5.3-2016.02-i686-mingw32_arm-linux-gnueabihf 
 
 # Use this goal to print your product variables.
 .show:
