@@ -38,25 +38,25 @@ EXBASE = .
 include $(EXBASE)/products.mak
 
 srcs = hello.c
-objs = $(addprefix bin/$(PROFILE)/obj/,$(patsubst %.c,%.oea8fnv,$(srcs)))
+objs = $(addprefix bin/$(PROFILE)/obj/,$(patsubst %.c,%.oem3,$(srcs)))
 libs =
 CONFIG = bin/$(PROFILE)/configuro
 
--include $(addprefix bin/$(PROFILE)/obj/,$(patsubst %.c,%.oea8fnv.dep,$(srcs)))
+-include $(addprefix bin/$(PROFILE)/obj/,$(patsubst %.c,%.oem3.dep,$(srcs)))
 
 .PRECIOUS: %/compiler.opt %/linker.cmd
 
 all:
-	$(MAKE) PROFILE=debug hello.x
-	$(MAKE) PROFILE=release hello.x
+	$(MAKE) PROFILE=debug PROCLIST="$(PROCLIST)" hello.x
+	$(MAKE) PROFILE=release PROCLIST="$(PROCLIST)" hello.x
 
-hello.x: bin/$(PROFILE)/hello.xea8fnv
-bin/$(PROFILE)/hello.xea8fnv: $(objs) $(libs) $(CONFIG)/linker.cmd
+hello.x: bin/$(PROFILE)/hello.xem3
+bin/$(PROFILE)/hello.xem3: $(objs) $(libs) $(CONFIG)/linker.cmd
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-bin/$(PROFILE)/obj/%.oea8fnv: %.c $(CONFIG)/compiler.opt
+bin/$(PROFILE)/obj/%.oem3: %.c $(CONFIG)/compiler.opt
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
 	$(CC) $(CPPFLAGS) $(CFLAGS) --output_file=$@ -fc $<
@@ -65,21 +65,21 @@ bin/$(PROFILE)/obj/%.oea8fnv: %.c $(CONFIG)/compiler.opt
 %/linker.cmd: mycfg.cfg
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
-	$(XDC_INSTALL_DIR)/xs \
-			--xdcpath="$(subst +,;,$(PKGPATH))" \
+	$(XDC_INSTALL_DIR)/xs --xdcpath="$(subst +,;,$(PKGPATH))" \
             xdc.tools.configuro -o $(CONFIG) \
-            -t ti.targets.arm.elf.A8Fnv \
-            -c $(ti.targets.arm.elf.A8Fnv) \
-            -p ti.platforms.evmTI814X:mycfg \
+            -t ti.targets.arm.elf.M3 \
+            -c $(ti.targets.arm.elf.M3) \
+            -p ti.platforms.evmTI813X:core0 \
             mycfg.cfg
+#            -p ti.platforms.evmTI814X:video \
 
 install:
 	@$(ECHO) "#"
 	@$(ECHO) "# Making $@ ..."
 	@$(MKDIR) $(EXEC_DIR)/debug
-	$(CP) bin/debug/hello.xea8fnv $(EXEC_DIR)/debug
+	$(CP) bin/debug/hello.xem3 $(EXEC_DIR)/debug
 	@$(MKDIR) $(EXEC_DIR)/release
-	$(CP) bin/release/hello.xea8fnv $(EXEC_DIR)/release
+	$(CP) bin/release/hello.xem3 $(EXEC_DIR)/release
 
 help:
 	@$(ECHO) "make                   # build executable"
@@ -100,7 +100,7 @@ endif
 endif
 
 #  ======== toolchain macros ========
-CGTOOLS = $(ti.targets.arm.elf.A8Fnv)
+CGTOOLS = $(ti.targets.arm.elf.M3)
 
 CC = $(CGTOOLS)/bin/armcl -c
 LD = $(CGTOOLS)/bin/armlnk
@@ -109,13 +109,13 @@ CPPFLAGS =
 CFLAGS = -qq -pdsw225 -ppd=$@.dep -ppa $(CCPROFILE_$(PROFILE)) -@$(CONFIG)/compiler.opt -I.
 
 LDFLAGS = -w -q -c -m $(@D)/obj/$(@F).map
-LDLIBS = -l $(CGTOOLS)/lib/rtsv7A8_A_le_n_v3_eabi.lib
+LDLIBS = -l $(CGTOOLS)/lib/rtsv7M3_T_le_eabi.lib
 
 CCPROFILE_debug = -D_DEBUG_=1 --symdebug:dwarf
 CCPROFILE_release = -O2
 
 #  ======== standard macros ========
-ifneq (,$(wildcard $(XDC_INSTALL_DIR)/bin/echo.exe))
+ifneq (,$(wildcard $(XDC_INSTALL_DIR)/xdc.exe))
     # use these on Windows
     CP      = $(XDC_INSTALL_DIR)/bin/cp
     ECHO    = $(XDC_INSTALL_DIR)/bin/echo

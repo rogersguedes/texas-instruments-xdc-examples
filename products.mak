@@ -55,16 +55,18 @@ DEPOT = C:/Products
 CCS6_0 = C:/CCS/CCS6.0.0.00190/ccsv6/tools/compiler
 
 #### BIOS-side dependencies ####
+XDC_INSTALL_DIR        = $(DEPOT)/xdctools_3_30_04_52
 BIOS_INSTALL_DIR       = $(DEPOT)/bios_6_41_00_26
 IPC_INSTALL_DIR        = $(DEPOT)/ipc_3_30_03_14
-XDC_INSTALL_DIR        = $(DEPOT)/xdctools_3_30_04_52
 
 #### BIOS-side toolchains ####
+ti.targets.elf.C674      = $(CCS6_0)/c6000_7.4.7
 ti.targets.arm.elf.A8Fnv = $(CCS6_0)/arm_5.1.5
+ti.targets.arm.elf.M3    = $(CCS6_0)/arm_5.1.5
 
 # Use this goal to print your product variables.
 .show:
 	@echo "BIOS_INSTALL_DIR    = $(BIOS_INSTALL_DIR)"
 	@echo "IPC_INSTALL_DIR     = $(IPC_INSTALL_DIR)"
 	@echo "XDC_INSTALL_DIR     = $(XDC_INSTALL_DIR)"
-	@echo "ti.targets.arm.elf.A8Fnv = $(ti.targets.arm.elf.A8Fnv)"
+	@echo "ti.targets.arm.elf.M3 = $(ti.targets.arm.elf.M3)"
